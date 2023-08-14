@@ -48,7 +48,7 @@ ALLOWED_SPEED_VALUES = [1, 3, 5, 7, 9]
 
 
 def get_config() -> dict:
-    if os.path.join(xdg_config_home, 'kbd-and-fan-ctrl-config.json'):
+    if os.path.exists(os.path.join(xdg_config_home, 'kbd-and-fan-ctrl-config.json')):
         with open(os.path.join(xdg_config_home, 'kbd-and-fan-ctrl-config.json'), 'r') as file:
             return json.load(file)
     else:
