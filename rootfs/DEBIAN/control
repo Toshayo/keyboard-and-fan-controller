@@ -5,4 +5,4 @@ Architecture: all
 Maintainer: Toshayo
 Description: RGB Keyboard and fan controlling software
 Priority: optional
-Depends: python3-gi
+Depends: python3-gi, python3-xdg
