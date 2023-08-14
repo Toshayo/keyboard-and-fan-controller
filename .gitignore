@@ -1,0 +1,5 @@
+# App configuration file
+rootfs/opt/kbd-and-fan-ctrl/config.json
+
+# IDE folders
+.idea/

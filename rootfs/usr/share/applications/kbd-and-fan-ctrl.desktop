@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Keyboard & Fan Controller
+Exec="/opt/kbd-and-fan-ctrl/start.sh"
+Terminal=false
+Type=Application
+Icon=kbd-and-fan-ctrl
+Comment=RGB keyboard & fan controlling program
+Categories=System;Utility;

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+find /opt/kbd-and-fan-ctrl -name __pycache__ -exec rm -rf {} \; >/dev/null 2>/dev/null
+
+exit 0

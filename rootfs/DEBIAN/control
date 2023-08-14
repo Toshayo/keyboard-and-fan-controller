@@ -1,0 +1,8 @@
+Package: kbd-and-fan-ctrl
+Version: 1.0.0
+Section: misc
+Architecture: all
+Maintainer: Toshayo
+Description: RGB Keyboard and fan controlling software
+Priority: optional
+Depends: python3-gi
