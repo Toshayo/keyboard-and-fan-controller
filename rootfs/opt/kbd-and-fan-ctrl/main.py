@@ -1,6 +1,8 @@
 import json
 import os.path
 
+from xdg.BaseDirectory import xdg_config_home
+
 import gi
 
 gi.require_version('Gtk', '3.0')
@@ -46,8 +48,8 @@ ALLOWED_SPEED_VALUES = [1, 3, 5, 7, 9]
 
 
 def get_config() -> dict:
-    if os.path.exists('config.json'):
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.json'), 'r') as file:
+    if os.path.join(xdg_config_home, 'kbd-and-fan-ctrl-config.json'):
+        with open(os.path.join(xdg_config_home, 'kbd-and-fan-ctrl-config.json'), 'r') as file:
             return json.load(file)
     else:
         return {
@@ -61,7 +63,7 @@ def get_config() -> dict:
 
 def save_config():
     global config
-    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.json'), 'w') as file:
+    with open(os.path.join(xdg_config_home, 'kbd-and-fan-ctrl-config.json'), 'w') as file:
         json.dump(config, file)
 
 
