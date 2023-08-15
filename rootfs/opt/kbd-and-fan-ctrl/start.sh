@@ -3,5 +3,5 @@ cd "$(dirname $(readlink -f "$0"))"
 
 python3 main.py
 
-cd -
+cd - >/dev/null
 exit 0
