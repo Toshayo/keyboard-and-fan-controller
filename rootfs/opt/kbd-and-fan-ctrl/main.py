@@ -45,20 +45,26 @@ BACKLIGHT_MODES = {
     },
 }
 ALLOWED_SPEED_VALUES = [1, 3, 5, 7, 9]
+DEFAULT_CONFIG = {
+    'mode': 0,
+    'speed': 0,
+    'direction': 0,
+    'color': 0xFFFFFF,
+    'fanMode': 0,
+    'fanSpeed': [50, 50]
+}
 
 
 def get_config() -> dict:
     if os.path.exists(os.path.join(xdg_config_home, 'kbd-and-fan-ctrl-config.json')):
         with open(os.path.join(xdg_config_home, 'kbd-and-fan-ctrl-config.json'), 'r') as file:
-            return json.load(file)
+            conf = json.load(file)
+            for key, value in DEFAULT_CONFIG.items():
+                if key not in conf:
+                    conf[key] = value
+            return conf
     else:
-        return {
-            'mode': 0,
-            'speed': 0,
-            'direction': 0,
-            'color': 0xFFFFFF,
-            'fanMode': 0
-        }
+        return DEFAULT_CONFIG
 
 
 def save_config():
@@ -114,15 +120,24 @@ def on_backlight_config_save(button):
         file.write(config['color'].to_bytes(3, byteorder='big'))
 
 
+def on_fan_mode_changed(combo: Gtk.ComboBoxText):
+    global builder, config
+    is_manual = combo.get_active() == 2
+    builder.get_object('fan0Speed').set_sensitive(is_manual)
+    builder.get_object('fan1Speed').set_sensitive(is_manual)
+
+
 def on_fan_config_save(button):
     global builder, config
-    if builder.get_object('fanMaxEnabled').get_active():
-        config['fanMode'] = 1
-    else:
-        config['fanMode'] = 0
+    config['fanMode'] = builder.get_object('fanMode').get_active()
+    config['fanSpeed'][0] = int(builder.get_object('fan0Speed').get_value())
+    config['fanSpeed'][1] = int(builder.get_object('fan1Speed').get_value())
     save_config()
-    with open('/dev/acer-nitro17_fan', 'wb') as file:
-        file.write(config['fanMode'].to_bytes(1, byteorder='big'))
+    for i in range(2):
+        with open('/dev/acer-nitro17_fan', 'wb') as file:
+            file.write(config['fanMode'].to_bytes(1, byteorder='big'))
+            file.write(i.to_bytes(1, byteorder='big'))
+            file.write(config['fanSpeed'][i].to_bytes(1, byteorder='big'))
 
 
 if __name__ == '__main__':
@@ -135,6 +150,7 @@ if __name__ == '__main__':
         'onBacklightModeChanged': on_backlight_mode_changed,
         'onBacklightSpeedChanged': on_backlight_speed_changed,
         'onBacklightConfigSave': on_backlight_config_save,
+        'onFanModeChanged': on_fan_mode_changed,
         'onFanConfigSave': on_fan_config_save,
     })
     builder.get_object('backlightMode').set_active(config['mode'])
@@ -144,6 +160,8 @@ if __name__ == '__main__':
     color.parse('#' + hex(config['color'])[2:].rjust(6, '0'))
     builder.get_object('backlightColor').set_rgba(color)
     builder.get_object('backlightDirection').set_active(max(0, config['direction'] - 1))
-    builder.get_object('fanMaxEnabled').set_active(config['fanMode'] == 1)
+    builder.get_object('fanMode').set_active(config['fanMode'])
+    for i in range(2):
+        builder.get_object('fan' + str(i) + 'Speed').set_value(config['fanSpeed'][i])
     builder.get_object('mainWindow').show_all()
     Gtk.main()
