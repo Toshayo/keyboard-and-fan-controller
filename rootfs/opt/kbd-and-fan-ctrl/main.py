@@ -1,5 +1,6 @@
 import json
 import os.path
+from typing import Union
 
 from xdg.BaseDirectory import xdg_config_home
 
@@ -142,6 +143,7 @@ def on_fan_config_save(button):
 
 if __name__ == '__main__':
     config = get_config()
+    window: Union[Gtk.Window, None] = None
 
     builder = Gtk.Builder()
     builder.add_from_file('mainwindow.glade')
@@ -152,6 +154,7 @@ if __name__ == '__main__':
         'onBacklightConfigSave': on_backlight_config_save,
         'onFanModeChanged': on_fan_mode_changed,
         'onFanConfigSave': on_fan_config_save,
+        'onTrayActivated': lambda s: window.set_visible(not window.get_visible())
     })
     builder.get_object('backlightMode').set_active(config['mode'])
     on_backlight_mode_changed(builder.get_object('backlightMode'))
@@ -163,5 +166,7 @@ if __name__ == '__main__':
     builder.get_object('fanMode').set_active(config['fanMode'])
     for i in range(2):
         builder.get_object('fan' + str(i) + 'Speed').set_value(config['fanSpeed'][i])
-    builder.get_object('mainWindow').show_all()
+    window = builder.get_object('mainWindow')
+    window.show_all()
+
     Gtk.main()

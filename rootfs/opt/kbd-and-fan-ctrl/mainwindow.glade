@@ -434,4 +434,9 @@
       </object>
     </child>
   </object>
+  <object class="GtkStatusIcon" id="statusIcon">
+    <property name="pixbuf">icon.png</property>
+    <property name="tooltip-text" translatable="yes">RGB Keyboard &amp; Fan Controller</property>
+    <signal name="activate" handler="onTrayActivated" swapped="no"/>
+  </object>
 </interface>
